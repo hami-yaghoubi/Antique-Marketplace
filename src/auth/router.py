@@ -9,16 +9,13 @@ from src.auth.service import register, login, change_password
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register_user(user_create: UserCreate, db: DbSession):
     try:
         return register(db, user_create)
 
     except UserAlreadyExistsError as e:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=e.message
-        )
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=e.message)
 
 
 @router.post("/login", response_model=Token)
@@ -27,10 +24,7 @@ def login_user(data: LoginRequest, db: DbSession):
         return login(db, data)
 
     except InvalidCredentialsError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=e.message
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message)
 
 
 @router.get("/me", response_model=UserResponse)
@@ -48,7 +42,4 @@ def update_password(data: ChangePasswordRequest, current_user: CurrentUser, db: 
         }
 
     except InvalidCredentialsError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=e.message,
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message)
