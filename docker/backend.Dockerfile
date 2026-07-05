@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --no-dev
 COPY src/ ./src/
 COPY alembic.ini ./
 COPY docker/entrypoint.sh ./
+COPY migrations/ ./migrations/
 
 RUN chmod +x entrypoint.sh
 
